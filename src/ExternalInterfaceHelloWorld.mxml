@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600"
+			   xmlns:components="components.*">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			
+			public function returnHelloString():String {
+				trace("returnHelloString")
+				return "Hello";
+			}
+			
+			private function checkJavaScriptReady():Boolean {
+				trace("checkJavaScriptReady")
+				var isReady:Boolean = ExternalInterface.call("isReady");
+				return isReady;
+			}
+			
+			private function timerHandler(event:TimerEvent):void {
+				var isReady:Boolean = checkJavaScriptReady();
+				if (isReady) {
+					Timer(event.target).stop();
+				}
+			}
+
+			protected function callJavascript_clickHandler(event:MouseEvent):void
+			{
+				if ( ExternalInterface.available )
+				{
+					
+					
+					ExternalInterface.addCallback("returnHello", returnHelloString);
+					if ( checkJavaScriptReady()) {
+						
+						var helloWorld:String = ExternalInterface.call("helloWorldJs");
+						if ( helloWorld == null ) {
+							Alert.show("returning null");
+						} else {
+							
+							trace("Return val from js method: " + helloWorld);
+							Alert.show(helloWorld);
+						}
+					} else {
+						var readyTimer:Timer = new Timer(100, 0);
+						readyTimer.addEventListener(TimerEvent.TIMER, timerHandler);
+						readyTimer.start();
+					}
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:Button label="call javascript" click="callJavascript_clickHandler(event)">
+		
+	</s:Button>
+	
+</s:Application>
