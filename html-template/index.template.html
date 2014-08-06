@@ -58,25 +58,31 @@
             // JavaScript enabled so display the flashContent div in case it is not replaced with a swf object.
             swfobject.createCSS("#flashContent", "display:block;text-align:left;");
             
-            function pageInit() {
-         		jsReady = true;
-         		document.forms["form1"].output.value += "\n" + "JavaScript is ready.\n";
-     		}
+            function loadFile(url) {
+        		var xmlHttp = null;
+        		xmlHttp = new XMLHttpRequest();
+				xmlHttp.addEventListener("load", transferComplete, false);
+				xmlHttp.addEventListener("error", transferFailed, false);
+        		xmlHttp.open("GET", url, true);
+        		xmlHttp.send(null);
+        	}
+
+        	function transferComplete(evt) {
+        		console.log('in transferComplete');
+        		var getResponse = evt.currentTarget.responseText;
+				var base64EncodedString = window.btoa(encodeURIComponent(escape(getResponse)));
+				console.log("base64EncodedString: " + base64EncodedString);
+        		var element = document.getElementById("${application}");
+        		element.executeCallback(base64EncodedString);
+        	}
             
-           	var jsReady = false;
-		     function isReady() {
-		         return jsReady;
-		     }
-            
-            function helloWorldJs() {
-            	var hello = returnHello;
-            	var world = " world!"
-            	alert('got here');
-            	return hello + world;
-            }
+            function transferFailed(evt) {
+        		alert("the transfer failed");
+        	}
+        	
         </script>
     </head>
-    <body onload="pageInit()">
+    <body>
         <!-- SWFObject's dynamic embed method replaces this alternative HTML content with Flash content when enough 
              JavaScript and Flash plug-in support is available. The div is initially hidden so that it doesn't show
              when JavaScript is disabled.

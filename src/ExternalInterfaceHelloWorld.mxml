@@ -3,62 +3,65 @@
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600"
 			   xmlns:components="components.*">
+	
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
 	
 	<fx:Script>
 		<![CDATA[
-			import mx.controls.Alert;
+			import components.ExternalDownloadManager;
+			import components.HTTPStreamDownloader;
 			
-			public function returnHelloString():String {
-				trace("returnHelloString")
-				return "Hello";
-			}
+			import mx.utils.Base64Decoder;
 			
-			private function checkJavaScriptReady():Boolean {
-				trace("checkJavaScriptReady")
-				var isReady:Boolean = ExternalInterface.call("isReady");
-				return isReady;
-			}
+			protected var video:HTTPStreamDownloader;
+			protected var audio:HTTPStreamDownloader;
 			
-			private function timerHandler(event:TimerEvent):void {
-				var isReady:Boolean = checkJavaScriptReady();
-				if (isReady) {
-					Timer(event.target).stop();
-				}
-			}
-
-			protected function callJavascript_clickHandler(event:MouseEvent):void
+			protected const videoURL:String = 'http://dash.edgesuite.net/dash264/TestCases/1a/netflix/ElephantsDream_AAC48K_064.mp4.dash?range=0-1500';
+			protected const audioURL:String = 'http://dash.edgesuite.net/dash264/TestCases/1a/netflix/ElephantsDream_H264BPL30_0100.264.dash?range=0-1500';
+			
+			protected var _bytes:ByteArray;
+			
+			protected function urlDownloader_clickHandler(event:MouseEvent):void
 			{
-				if ( ExternalInterface.available )
-				{
-					
-					
-					ExternalInterface.addCallback("returnHello", returnHelloString);
-					if ( checkJavaScriptReady()) {
-						
-						var helloWorld:String = ExternalInterface.call("helloWorldJs");
-						if ( helloWorld == null ) {
-							Alert.show("returning null");
-						} else {
-							
-							trace("Return val from js method: " + helloWorld);
-							Alert.show(helloWorld);
-						}
-					} else {
-						var readyTimer:Timer = new Timer(100, 0);
-						readyTimer.addEventListener(TimerEvent.TIMER, timerHandler);
-						readyTimer.start();
-					}
-				}
+//				video =  new HTTPStreamDownloader();
+//				audio = new HTTPStreamDownloader();
+//				
+//				video.open('http://dash.edgesuite.net/dash264/TestCases/1a/netflix/ElephantsDream_AAC48K_064.mp4.dash?range=0-1500');
+//				audio.open('http://dash.edgesuite.net/dash264/TestCases/1a/netflix/ElephantsDream_H264BPL30_0100.264.dash?range=0-1500');
+			
+				var downloadManager:ExternalDownloadManager = ExternalDownloadManager.getInstance();
+				downloadManager.download(videoURL, saveBytes);
+			}
+			
+			protected function saveBytes(stream:String):void
+			{
+				var streamDecoder:Base64Decoder = new Base64Decoder();
+				streamDecoder.decode(stream);
+				_bytes = streamDecoder.toByteArray();
+				trace("_bytes when saved: " + _bytes)
+			}
+			
+			protected function getBytes_clickHandler(event: MouseEvent):void
+			{
+//				video.getBytes();
+//				audio.getBytes();
+				
+				this.getBytes();
+			}
+			
+			public function getBytes():IDataInput
+			{
+				trace("_bytes when retreived: " + _bytes);
+				return _bytes;
 			}
 			
 		]]>
 	</fx:Script>
-	
-	<s:Button label="call javascript" click="callJavascript_clickHandler(event)">
-		
-	</s:Button>
+	<mx:VBox>
+		<s:Button label="call url downloader" click="urlDownloader_clickHandler(event)" />
+		<s:Button label="call get bytes" click="getBytes_clickHandler(event)" />
+	</mx:VBox>
 	
 </s:Application>
