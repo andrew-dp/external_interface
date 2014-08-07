@@ -14,7 +14,7 @@ package components
 		public function open(url:String):void
 		{
 			var downloadManager:ExternalDownloadManager = ExternalDownloadManager.getInstance();
-//			downloadManager.download(url, function);
+			downloadManager.download(url, saveBytes);
 		}
 		
 		protected function saveBytes(stream:String):void

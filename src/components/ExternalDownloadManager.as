@@ -23,7 +23,6 @@ package components
 		{
 			ExternalInterface.call('loadFile', url);
 			_callback = callback;
-			ExternalInterface.addCallback("executeCallback", executeCallback);
 		}
 		
 		private function executeCallback(stream:String):void
@@ -46,6 +45,7 @@ package components
 			{
 				throw new Error("Error: Instantiation failed: Use SingletonDemo.getInstance() instead of new.");
 			}
+			ExternalInterface.addCallback("executeCallback", executeCallback);
 		}
 	}
 }

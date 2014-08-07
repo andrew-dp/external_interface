@@ -25,14 +25,17 @@
 			
 			protected function urlDownloader_clickHandler(event:MouseEvent):void
 			{
-//				video =  new HTTPStreamDownloader();
-//				audio = new HTTPStreamDownloader();
-//				
-//				video.open('http://dash.edgesuite.net/dash264/TestCases/1a/netflix/ElephantsDream_AAC48K_064.mp4.dash?range=0-1500');
-//				audio.open('http://dash.edgesuite.net/dash264/TestCases/1a/netflix/ElephantsDream_H264BPL30_0100.264.dash?range=0-1500');
+				video =  new HTTPStreamDownloader();
+				audio = new HTTPStreamDownloader();
+				
+				video.open(videoURL);
+				audio.open(audioURL);
 			
-				var downloadManager:ExternalDownloadManager = ExternalDownloadManager.getInstance();
-				downloadManager.download(videoURL, saveBytes);
+//				var videoManager:ExternalDownloadManager = ExternalDownloadManager.getInstance();
+//				var audioManager:ExternalDownloadManager = ExternalDownloadManager.getInstance();
+//				
+//				videoManager.download(videoURL, saveBytes);
+//				audioManager.download(audioURL, saveBytes);
 			}
 			
 			protected function saveBytes(stream:String):void
@@ -45,10 +48,10 @@
 			
 			protected function getBytes_clickHandler(event: MouseEvent):void
 			{
-//				video.getBytes();
-//				audio.getBytes();
+				video.getBytes();
+				audio.getBytes();
 				
-				this.getBytes();
+//				this.getBytes();
 			}
 			
 			public function getBytes():IDataInput
