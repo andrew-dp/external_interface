@@ -2,9 +2,7 @@ package components
 {
 	import flash.external.ExternalInterface;
 	import flash.utils.ByteArray;
-	import flash.utils.IDataInput;
-	
-	import mx.utils.Base64Decoder;
+	import flash.utils.Dictionary;
 
 	/**
 	 * Singleton 
@@ -17,17 +15,19 @@ package components
 		
 		protected var _bytes:ByteArray;
 		
-		protected var _callback:Function;
+		protected var urlCallbackMap:Dictionary;
 		
 		public function download(url:String, callback:Function):void
 		{
 			ExternalInterface.call('loadFile', url);
-			_callback = callback;
+			urlCallbackMap[url] = callback;
 		}
 		
-		private function executeCallback(stream:String):void
+		private function onJavaScriptDownloadComplete(url:String, stream:String):void
 		{
-			_callback(stream);
+			var callback:Function = urlCallbackMap[url];
+			callback(stream);
+			delete urlCallbackMap[url];
 		}
 		
 		public static function getInstance():ExternalDownloadManager
@@ -45,7 +45,8 @@ package components
 			{
 				throw new Error("Error: Instantiation failed: Use SingletonDemo.getInstance() instead of new.");
 			}
-			ExternalInterface.addCallback("executeCallback", executeCallback);
+			ExternalInterface.addCallback("executeCallback", onJavaScriptDownloadComplete);
+			urlCallbackMap = new Dictionary();
 		}
 	}
 }

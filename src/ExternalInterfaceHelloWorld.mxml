@@ -10,18 +10,13 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import components.ExternalDownloadManager;
 			import components.HTTPStreamDownloader;
-			
-			import mx.utils.Base64Decoder;
 			
 			protected var video:HTTPStreamDownloader;
 			protected var audio:HTTPStreamDownloader;
 			
 			protected const videoURL:String = 'http://dash.edgesuite.net/dash264/TestCases/1a/netflix/ElephantsDream_AAC48K_064.mp4.dash?range=0-1500';
 			protected const audioURL:String = 'http://dash.edgesuite.net/dash264/TestCases/1a/netflix/ElephantsDream_H264BPL30_0100.264.dash?range=0-1500';
-			
-			protected var _bytes:ByteArray;
 			
 			protected function urlDownloader_clickHandler(event:MouseEvent):void
 			{
@@ -30,36 +25,15 @@
 				
 				video.open(videoURL);
 				audio.open(audioURL);
-			
-//				var videoManager:ExternalDownloadManager = ExternalDownloadManager.getInstance();
-//				var audioManager:ExternalDownloadManager = ExternalDownloadManager.getInstance();
-//				
-//				videoManager.download(videoURL, saveBytes);
-//				audioManager.download(audioURL, saveBytes);
-			}
-			
-			protected function saveBytes(stream:String):void
-			{
-				var streamDecoder:Base64Decoder = new Base64Decoder();
-				streamDecoder.decode(stream);
-				_bytes = streamDecoder.toByteArray();
-				trace("_bytes when saved: " + _bytes)
 			}
 			
 			protected function getBytes_clickHandler(event: MouseEvent):void
 			{
-				video.getBytes();
-				audio.getBytes();
-				
-//				this.getBytes();
+				var videoBytes:IDataInput = video.getBytes();
+				var audioBytes:IDataInput = audio.getBytes();
+				trace("videoBytes: " + videoBytes);
+				trace("audioBytes: " + audioBytes);
 			}
-			
-			public function getBytes():IDataInput
-			{
-				trace("_bytes when retreived: " + _bytes);
-				return _bytes;
-			}
-			
 		]]>
 	</fx:Script>
 	<mx:VBox>

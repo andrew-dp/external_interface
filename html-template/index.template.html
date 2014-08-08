@@ -58,22 +58,21 @@
             // JavaScript enabled so display the flashContent div in case it is not replaced with a swf object.
             swfobject.createCSS("#flashContent", "display:block;text-align:left;");
             
+            
             function loadFile(url) {
         		var xmlHttp = null;
         		xmlHttp = new XMLHttpRequest();
-				xmlHttp.addEventListener("load", transferComplete, false);
+				xmlHttp.addEventListener("load", function(evt){ 
+					console.log(url);
+	        		var getResponse = evt.currentTarget.responseText;
+					var base64EncodedString = window.btoa(encodeURIComponent(escape(getResponse)));
+					console.log("base64EncodedString: " + base64EncodedString);
+	        		var element = document.getElementById("${application}");
+	        		element.executeCallback(url, base64EncodedString);
+				}, false);
 				xmlHttp.addEventListener("error", transferFailed, false);
         		xmlHttp.open("GET", url, true);
         		xmlHttp.send(null);
-        	}
-
-        	function transferComplete(evt) {
-        		console.log('in transferComplete');
-        		var getResponse = evt.currentTarget.responseText;
-				var base64EncodedString = window.btoa(encodeURIComponent(escape(getResponse)));
-				console.log("base64EncodedString: " + base64EncodedString);
-        		var element = document.getElementById("${application}");
-        		element.executeCallback(base64EncodedString);
         	}
             
             function transferFailed(evt) {

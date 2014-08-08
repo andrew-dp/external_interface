@@ -1,6 +1,5 @@
 package components
 {
-	import flash.external.ExternalInterface;
 	import flash.utils.ByteArray;
 	import flash.utils.IDataInput;
 	
@@ -8,7 +7,6 @@ package components
 
 	public class HTTPStreamDownloader
 	{
-		
 		protected var _bytes:ByteArray;
 		
 		public function open(url:String):void
@@ -22,12 +20,10 @@ package components
 			var streamDecoder:Base64Decoder = new Base64Decoder();
 			streamDecoder.decode(stream);
 			_bytes = streamDecoder.toByteArray();
-			trace("_bytes when saved: " + _bytes)
 		}
 		
 		public function getBytes():IDataInput
 		{
-			trace("_bytes when retreived: " + _bytes);
 			return _bytes;
 		}
 		
